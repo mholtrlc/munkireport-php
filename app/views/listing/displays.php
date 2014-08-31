@@ -13,7 +13,7 @@
 
     <script type="text/javascript">
 
-      $(document).ready(function() {
+      $(document).on('appReady', function(e, lang) {
 
         // Get modifiers from data attribute
         var myCols = [], // Colnames
@@ -39,8 +39,6 @@
         });
 
         oTable = $('.table').dataTable( {
-          "bProcessing": true,
-          "bServerSide": true,
           "sAjaxSource": "<?=url('datatables/data')?>",
           "aaSorting": mySort,
           "aoColumns": myCols,
@@ -54,10 +52,10 @@
             if(name == ''){name = "No Name"};
             var sn=$('td:eq(1)', nRow).html();
             if(sn){
-              var link = get_client_detail_link(name, sn, '<?=url()?>/');
+              var link = get_client_detail_link(name, sn, '<?=url()?>/', '#tab_displays-tab');
               $('td:eq(0)', nRow).html(link);
-            } else { //hide empty rows
-              $('td', nRow).hide();
+            } else {
+              $('td:eq(0)', nRow).html(name);
             }
 
             // Internal vs External
@@ -67,6 +65,10 @@
             $('td:eq(2)', nRow).html(status)
 
             // Translating vendors column
+            //todo: find how the hell Apple translates the EDID/DDC to these values
+            // http://ftp.netbsd.org/pub/NetBSD/NetBSD-current/src/sys/dev/videomode/ediddevs
+            // https://github.com/GNOME/gnome-desktop/blob/master/libgnome-desktop/gnome-pnp-ids.c
+            // https://www.opensource.apple.com/source/xnu/xnu-124.7/iokit/Families/IOGraphics/AppleDDCDisplay.cpp
             var vendor=$('td:eq(3)', nRow).html();
             switch (vendor)
             {
@@ -74,27 +76,70 @@
               vendor="Apple"
               break;
             case "10ac":
-              vendor="DELL"
+              vendor="Dell"
               break;
+            case "5c23":
+              vendor="Wacom"
+              break;
+            case "4d10":
+              vendor="Sharp"
+              break;
+            case "1e6d":
+              vendor="LG"
+              break;
+            case "38a3":
+              vendor="NEC"
+              break;
+            case "4c49":
+              vendor="SMART Technologies"
+              break;
+            case "9d1":
+              vendor="BenQ"
+              break;
+            case "4dd9":
+              vendor="Sony"
+              break;
+            case "472":
+              vendor="Acer"
+              break;
+            case "22f0":
+                vendor="HP"
+                break;
+            case "34ac":
+                vendor="Mitsubishi"
+                break;
+            case "5a63":
+                vendor="ViewSonic"
+                break;
+            case "4c2d":
+                vendor="Samsung"
+                break;
+            case "593a":
+                vendor="Vizio"
+                break;
+            case "d82":
+                vendor="CompuLab"
+                break;
+            case "3023":
+                vendor="LaCie"
+                break;
+            case "3698":
+                vendor="Matrox"
+                break;
             }
             $('td:eq(3)', nRow).html(vendor)
 
-            // Format timestamp from unix to relative
+            // Format timestamp from unix to relative and the title to timezone detail
             date = aData['displays#timestamp'];
             if(date)
             {
-                  $('td:eq(8)', nRow).html(moment.unix(date).fromNow());
+                  var formatted='<time title="'+ moment.unix(date).format("LLLL (Z)") + '" </time>' + moment.unix(date).fromNow();
+                  $('td:eq(8)', nRow).html(formatted);
             }
 
           } //end fnCreatedRow
 
         } ); //end oTable
-
-        // Use hash as searchquery
-        if(window.location.hash.substring(1))
-        {
-          oTable.fnFilter( decodeURIComponent(window.location.hash.substring(1)) );
-        }
 
       } );
     </script>
@@ -113,7 +158,7 @@
             <th data-colname='displays#display_serial'>Serial number</th>
             <th data-colname='displays#manufactured'>Manufactured</th>
             <th data-colname='displays#native'>Native resolution</th>
-            <th data-colname='displays#timestamp'>Detected</th>
+            <th data-sort="desc" data-colname='displays#timestamp'>Detected</th>
           </tr>
         </thead>
 

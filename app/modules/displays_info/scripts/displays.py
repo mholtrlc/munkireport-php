@@ -6,7 +6,6 @@ import os
 import subprocess
 import plistlib
 import datetime
-import time
 
 # Skip manual check
 if len(sys.argv) > 1:
@@ -35,12 +34,21 @@ for vga in plist[0]['_items']:
     #loop within each display
     for display in vga['spdisplays_ndrvs']:
 
-      #Serial and Type sections
+      #Type section
+      try:
+        if display.get('spdisplays_display-serial-number', None):
+          result += 'Type = External'
+        elif display['_spdisplays_display-vendor-id'] == "610":
+          result += 'Type = Internal'
+        else:
+          result += 'Type = External'
+      except KeyError, error: #this catches the error for 10.6 where there is no vendor for built-in displays
+          result += 'Type = Internal'
+
+      #Serial section
       if display.get('spdisplays_display-serial-number', None):
-        result += 'Type = External'
         result += '\nSerial = ' + str(display['spdisplays_display-serial-number'])
       else:
-        result += 'Type = Internal'
         result += '\nSerial = n/a'
 
       try:
@@ -49,10 +57,14 @@ for vga in plist[0]['_items']:
 
         #Model section
         result += '\nModel = ' + str(display['_name'])
+        makeValid = display['_spdisplays_display-week']
+        if int(makeValid) == 255:
+            result += ' (' + str(display['_spdisplays_display-year']) + ")"
+            makeValid = "0"
 
         #Manufactured section
-        pretty = datetime.datetime.strptime(display['_spdisplays_display-year'] + display['_spdisplays_display-week'] + '1', '%Y%W%w')
-        result += '\nManufactured = ' + str(pretty.strftime('%B %Y'))
+            pretty = datetime.datetime.strptime(display['_spdisplays_display-year'] + makeValid + '1', '%Y%W%w')
+            result += '\nManufactured = ' + str(pretty.strftime('%B %Y'))
 
         #Native resolution section
         result += '\nNative = ' + str(display['_spdisplays_pixels'])
@@ -60,7 +72,7 @@ for vga in plist[0]['_items']:
         #Save section
         result += '\n----------\n'
 
-      except KeyError as error:
+      except KeyError, error:
         result += '\nAn error ocurred while reading this display\n'
 
 ##############

@@ -245,11 +245,11 @@
 	|
 	| If you would like to keep displays information until the display is seen again
 	| on a different computer use:
-	|			$config['keep_previous_displays'] = TRUE;
+	|			$conf['keep_previous_displays'] = TRUE;
 	|
 	| When not configured, or if set to FALSE, the default behaviour applies.
 	*/
-		//$config['keep_previous_displays'] = TRUE;
+		//$conf['keep_previous_displays'] = TRUE;
 
     /*
 	|===============================================
@@ -343,10 +343,12 @@
 	| an array of widgets. Omit the _widget postfix
 	|
 	*/
-    $conf['dashboard_layout'] = array(
-		array('client', 'munki', 'disk_report', 'installed_memory', 'bound_to_ds'),
-		array('new_clients', 'pending_apple', 'pending_munki'),
-		array('munki_versions', 'warranty', 'filevault')
+	$conf['dashboard_layout'] = array(
+		array('client', 'munki'), /*client is actually two widgets*/
+		array('disk_report', 'installed_memory', 'bound_to_ds'),
+		array('uptime', 'pending_apple', 'pending_munki'),
+		array('new_clients', 'munki_versions', 'filevault'),
+		array('warranty')
 	);
 
 	/*

@@ -1,4 +1,4 @@
-<div class="well well-small">
+<div class="well well-small machine-info">
 	<?$machine = new Machine_model($serial_number)?>
 	<?$report   = new Reportdata_model($serial_number)?>
 	<?$disk   = new Disk_report_model($serial_number)?>
@@ -22,40 +22,29 @@
 				(<?=$report->console_user?>)
 				<?endif?>
 				<br />
-				Warranty Coverage: 
+				Warranty Coverage:
 				<?if ($warranty->status == "Supported"):?>
-					<span class='text-success'>Supported until 
+					<span class='text-success'>Supported until
 						<?=$warranty->end_date?>
 					</span>
 				<?elseif ($warranty->status == "No Applecare"):?>
-					<span class='text-warning'>No Applecare until 
-						<?=$warranty->end_date?>
+					<span class='text-warning'>Supported until
+						<?=$warranty->end_date?>, No Applecare
 					</span>
 				<?elseif ($warranty->status == "Unregistered serialnumber"):?>
 					<span class='text-warning'>Unregistered</span>
 					<a target="_blank" href="https://selfsolve.apple.com/RegisterProduct.do?productRegister=Y&amp;country=USA&amp;id=<?=$serial_number?>">Register</a>
 				<?elseif ($warranty->status == "Expired"):?>
-					<span class='text-danger'>Expired on 
+					<span class='text-danger'>Expired on
 						<?=$warranty->end_date?>
 					</span>
 				<?else:?>
 					<span class='text-danger'><?=$warranty->status?></span>
 				<?endif?>
+				
+				<a class="btn btn-default btn-xs" href="<?php echo url('module/warranty/recheck_warranty/' . $serial_number);?>">Recheck Warranty Status</a> <br/>
 
-				</small>
-				<hr />
-				<a class="btn btn-default btn-xs" href="<?php echo url('module/warranty/recheck_warranty/' . $serial_number);?>">
-					Recheck Warranty Status
-				</a>
-				<?if(conf('vnc_link')):?>
-
-				<a class="btn btn-default btn-xs" href="<?printf(conf('vnc_link'), $report->remote_ip)?>">Remote Control (vnc)</a>
-				<?endif?>
-
-				<?if(conf('ssh_link')):?>
-
-				<a class="btn btn-default btn-xs" href="<?printf(conf('ssh_link'), $report->remote_ip)?>">Remote Control (ssh)</a>
-				<?endif?>
+		</small>
 
 		</div>
 		<div class="col-lg-4">
@@ -65,23 +54,37 @@
 					<dd>OS X <?=$machine->os_version . ' ('
 							. $machine->cpu_arch . ')'?>&nbsp;</dd>
 					<dt>CPU</dt>
-					<dd><?=$machine->cpu?></dd>
+					<dd><?=$machine->cpu?>&nbsp;</dd>
 					<dt>CPU Type</dt>
-					<dd><?=$machine->number_processors?> core</dd>
-					<dt>Serial Number</dt>
+					<dd><?=$machine->number_processors?> core&nbsp;</dd>
+					<dt data-i18n="serial">Serial Number</dt>
 					<dd><?=$serial_number?>&nbsp;</dd>
 					<dt>SMC Version</dt>
 					<dd><?=$machine->SMC_version_system?>&nbsp;</dd>
 					<dt>Boot ROM</dt>
 					<dd><?=$machine->boot_rom_version?>&nbsp;</dd>
-					<dt>Memory</dt>
+					<dt data-i18n="memory">Memory</dt>
 					<dd><?=intval($machine->physical_memory)?> GB&nbsp;</dd>
 					<dt>Hardware UUID</dt>
 					<dd><?=$machine->platform_UUID?>&nbsp;</dd>
 					<dt>Remote IP Address</dt>
-					<dd><?=$report->remote_ip;?>&nbsp;</dd>
+					<dd><?=$report->remote_ip?>&nbsp;</dd>
 					<dt>Local admin</dt>
-					<dd><?=$localadmin->users;?>&nbsp;</dd>
+					<dd><?=$localadmin->users?>&nbsp;</dd>
+					<dd>
+						<div class="btn-group btn-group-xs">
+							<?if(conf('vnc_link')):?>
+								<a class="btn btn-default" href="<?printf(conf('vnc_link'), $report->remote_ip)?>">
+									Remote Control (vnc)
+								</a>
+							<?endif?>
+							<?if(conf('ssh_link')):?>
+								<a class="btn btn-default" href="<?printf(conf('ssh_link'), $report->remote_ip)?>">
+									Remote Control (ssh)
+								</a>
+							<?endif?>
+						</div>
+					</dd>
 
 				</dl>
 			</small>
@@ -107,21 +110,21 @@
 				</dl>
 
 				<dl class="dl-horizontal">
+					<dt>Uptime</dt>
+					<?if($report->uptime > 0):?>
+					<dd><time class="absolutetime" title="Booted: <?=strftime('%c', $report->timestamp - $report->uptime)?>" datetime="<?=$report->uptime?>"><?=strftime('%x', $report->timestamp - $report->uptime)?></time></dd>
+					<?else:?>
+					<dd data-i18n="unavailable">Unavailable</dd>
+					<?endif?>
+				</dl>
+
+				<dl class="dl-horizontal">
 					<dt>Registration date</dt>
 					<dd><time title="<?=strftime('%c', $report->reg_timestamp)?>" datetime="<?=$report->reg_timestamp?>"><?=strftime('%x', $report->reg_timestamp)?></time></dd>
 					<dt>Last checkin</dt>
 					<dd><time title="<?=strftime('%c', $report->timestamp)?>" datetime="<?=$report->timestamp?>"><?=strftime('%x', $report->timestamp)?></time></dd>
 				</dl>
 
-				<script>
-					$(document).ready(function() {
-						$( "dd time" ).each(function( index ) {
-							$(this).html(moment($(this).attr('datetime') * 1000).fromNow());
-							$(this).tooltip().css('cursor', 'pointer');
-						});
-					});
-				</script>
-				
 			</small>
 		</div>
 	</div>
