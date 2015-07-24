@@ -584,3 +584,5 @@
 	| FALSE in a production environment
 	*/
 	$conf['debug'] = $$_MR_DEBUG_$$;
+
+	$auth_config['$$_MR_USERNAME_$$'] = '$$_MR_ENCRYPTRED_PASSWORD_$$';
