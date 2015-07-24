@@ -4,6 +4,7 @@ app/db/*
 
 app/views/dashboard/custom_dashboard.php
 
+config.php
 *.DS_Store
 
 *.zip
