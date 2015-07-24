@@ -79,7 +79,7 @@
 	| Will appear in the title bar of your browser and as heading on each webpage
 	|
 	*/
-	$conf['sitename'] = 'MunkiReport';
+	$conf['sitename'] = '$$_MR_SITE_NAME_$$';
 
 	/*
 	|===============================================
@@ -275,7 +275,7 @@
 	| Machine and Reportdata
 	|
 	*/
-    $conf['modules'] = array('munkireport');
+    $conf['modules'] = array($$_MR_MODULES_$$);
 
 
 	/*
@@ -292,7 +292,7 @@
 	|
 	| When not configured, or if set to FALSE, the default behaviour applies.
 	*/
-	//$conf['keep_previous_displays'] = TRUE;
+	$conf['keep_previous_displays'] = $$_MR_KEEP_PREVIOUS_DISPLAYS_$$;
 
 	/*
 	|===============================================
@@ -307,7 +307,7 @@
 	| By default temperture units are displayed in Celsius °C.
 	|
 	*/
-    //$conf['temperature_unit'] = 'F';
+    $conf['temperature_unit'] = '$$_MR_TEMP_UNIT_$$';
 
 
     /*
@@ -325,7 +325,7 @@
 	| to FALSE when you're done migrating.
 	|
 	*/
-    $conf['allow_migrations'] = FALSE;
+    $conf['allow_migrations'] = $$_MR_ALLOW_MIGRATIONS_$$;
 
 
 	/*
@@ -343,26 +343,8 @@
 	|
 	|
 	*/
-    $conf['client_passphrases'] = array();
+    $conf['client_passphrases'] = array($$_MR_CLIENT_PASSPHRASE_$$);
 
-	/*
-	|===============================================
-	| Proxy settings
-	|===============================================
-	|
-	| If you are behind a proxy, MunkiReport may be unable to
-	| retrieve warranty and model information from Apple.
-	|
-	| Note that there is only authenticated proxy support for
-	| basic authentication
-	|
-	| $conf['proxy']['server'] = 'proxy.yoursite.org'; // Required
-	| $conf['proxy']['username'] = 'proxyuser'; // Optional
-	| $conf['proxy']['password'] = 'proxypassword'; Optional
-	| $conf['proxy']['port'] = 8080; // Optional, defaults to 8080
-	|
-	*/
-    //$conf['proxy']['server'] = 'proxy.yoursite.org';
 
     /*
 	|===============================================
@@ -500,7 +482,7 @@
 														'Firefox','Microsoft Excel');
 	|
 	*/
-	$conf['apps_to_track'] = array('Safari');
+	$conf['apps_to_track'] = $$_MR_APPS_TO_TRACK_$$;
 
 	/*
 	|===============================================
@@ -547,11 +529,17 @@
 	| 	$conf['pdo_pass'] = 'munki';
 	| 	$conf['pdo_opts'] = array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8');
 	|
+	|
+	|$conf['pdo_dsn'] = 'sqlite:'.$conf['application_path'].'db/db.sqlite';
+	|$conf['pdo_user'] = '';
+	|$conf['pdo_pass'] = '';
+	|$conf['pdo_opts'] = array();
 	*/
-	$conf['pdo_dsn'] = 'sqlite:'.$conf['application_path'].'db/db.sqlite';
-	$conf['pdo_user'] = '';
-	$conf['pdo_pass'] = '';
-	$conf['pdo_opts'] = array();
+
+	$conf['pdo_dsn'] = 'mysql:host=$$_MYSQL_PORT_3306_TCP_ADDR_$$;dbname=$$_MYSQL_ENV_MYSQL_DATABASE_$$';
+	$conf['pdo_user'] = '$$_MYSQL_ENV_MYSQL_USER_$$';
+	$conf['pdo_pass'] = '$$_MYSQL_ENV_MYSQL_PASSWORD_$$';
+	$conf['pdo_opts'] = array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8');
 
 	/*
 	|===============================================
@@ -571,7 +559,7 @@
 	| See http://www.php.net/manual/en/timezones.php for valid values
 	|
 	*/
-	$conf['timezone'] = @date_default_timezone_get();
+	$conf['timezone'] = $$_MR_TZ_$$;
 
 	/*
 	|===============================================
@@ -595,4 +583,4 @@
 	| If set to TRUE, will deliver debugging messages in the page. Set to
 	| FALSE in a production environment
 	*/
-	$conf['debug'] = FALSE;
+	$conf['debug'] = $$_MR_DEBUG_$$;
