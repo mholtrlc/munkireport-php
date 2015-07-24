@@ -585,4 +585,4 @@
 	*/
 	$conf['debug'] = $$_MR_DEBUG_$$;
 
-	$auth_config['$$_MR_USERNAME_$$'] = '$$_MR_ENCRYPTRED_PASSWORD_$$';
+	$auth_config['$$_MR_USERNAME_$$'] = '$$_MR_ENCRYPTED_PASSWORD_$$';
